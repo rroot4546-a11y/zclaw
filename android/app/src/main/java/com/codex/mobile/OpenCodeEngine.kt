@@ -213,7 +213,11 @@ private const val PREFS = "zclaw.settings"
 
     private fun launch() {
         val paths = BootstrapInstaller.getPaths(context)
-        val root = engineRoot("root")
+        // The engine zip extracts its rootfs (bin/, lib/, lib64/, usr/, etc/, root/)
+        // directly into filesDir/opencode — that WHOLE directory is the proot root.
+        // Using a subdirectory (as before) produced an empty rootfs and "Could not
+        // start OpenCode".
+        val root = engineRoot("")
         val proot = File(paths.prefixDir, "bin/proot")
         if (!proot.exists()) throw RuntimeException("proot not installed")
 
@@ -224,7 +228,6 @@ private const val PREFS = "zclaw.settings"
             "${paths.prefixDir}/etc/tls/certs:/etc/ssl/certs",
             "${paths.prefixDir}/etc/resolv.conf:/etc/resolv.conf",
         )
-        // Replace the placeholder resolv.conf shipped in the pack with the live one.
         val cmd = mutableListOf(
             proot.absolutePath,
             "-0",
@@ -248,10 +251,46 @@ private const val PREFS = "zclaw.settings"
 
         Thread {
             try {
-                process?.inputStream?.bufferedReader()?.forEachLine { line -> Log.d(TAG, line) }
+                process?.inputStream?.bufferedReader()?.forEachLine { line ->
+                    Log.d(TAG, line)
+                    logToFile(line)
+                }
             } catch (_: Exception) {
             }
         }.start()
+    }
+
+    /**
+     * Rotating in-memory + on-disk tail of the serve output so failures show
+     * the real reason instead of a generic "could not start".
+     */
+    private val logLines = ArrayDeque<String>()
+
+    private fun logToFile(line: String) {
+        try {
+            logLines.addLast(line)
+            while (logLines.size > 200) logLines.removeFirst()
+            val logFile = File(engineRoot(""), "serve.log")
+            val entry = if (logLines.size == 1) line else line
+            logFile.appendText(entry + "\n")
+        } catch (_: Exception) {
+        }
+    }
+
+    fun lastError(): String {
+        val prefix = "آخر سجلات المحرك:"
+        val tail = logLines.toList().takeLast(12).joinToString("\n")
+        if (tail.isNotBlank()) return "$prefix\n$tail"
+        return try {
+            val logFile = File(engineRoot(""), "serve.log")
+            if (logFile.exists()) {
+                "$prefix\n" + logFile.readLines().takeLast(12).joinToString("\n")
+            } else {
+                ""
+            }
+        } catch (_: Exception) {
+            ""
+        }
     }
 
     private fun waitReady(timeoutMs: Long): Boolean {

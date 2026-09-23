@@ -817,3 +817,79 @@ html[data-theme='light'] .content-header {
     display: none !important;
   }
 }
+
+/* ══ zclaw 2.1 — mobile fit & readable contrast ════════════════════ */
+
+@media (max-width: 480px) {
+  .new-thread-hero {
+    font-size: 1.75rem !important;
+    text-align: center;
+  }
+
+  .new-thread-folder-dropdown {
+    font-size: 1rem !important;
+    max-width: 100%;
+  }
+
+  .new-thread-folder-dropdown :deep(.composer-dropdown-trigger) {
+    font-size: 0.9rem !important;
+  }
+
+  .new-thread-empty {
+    padding-inline: 16px;
+  }
+
+  .content-body {
+    gap: 8px !important;
+  }
+}
+
+html[data-theme='dark'] .message-text {
+  color: #e8eef5 !important;
+}
+
+html[data-theme='dark'] .thread-row-title,
+html[data-theme='dark'] .project-title,
+html[data-theme='dark'] .content-title {
+  color: #f1f5f9 !important;
+}
+
+html[data-theme='dark'] .worked-separator-text {
+  color: #8ea0b6 !important;
+}
+
+html[data-theme='dark'] .conversation-empty,
+html[data-theme='dark'] .conversation-loading,
+html[data-theme='dark'] .thread-row-time,
+html[data-theme='dark'] .project-empty,
+html[data-theme='dark'] .thread-tree-no-results {
+  color: #7d8ea6 !important;
+}
+
+/* dropdown menus must never overflow the phone screen */
+.composer-dropdown-menu,
+.composer-dropdown-menu-wrap {
+  max-width: calc(100vw - 24px) !important;
+}
+
+.composer-dropdown-menu {
+  max-height: 60vh !important;
+}
+
+@media (max-width: 767px) {
+  .message-text {
+    font-size: 16px !important;
+  }
+
+  .message-body {
+    padding-inline: 8px;
+  }
+
+  .conversation-list {
+    padding-inline: 8px !important;
+  }
+
+  .content-header {
+    gap: 8px;
+  }
+}

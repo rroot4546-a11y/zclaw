@@ -172,7 +172,26 @@ class MainActivity : AppCompatActivity() {
             override fun shouldOverrideUrlLoading(
                 view: WebView,
                 url: String,
-            ): Boolean = false
+            ): Boolean {
+                if (url.startsWith("zclaw://", ignoreCase = true)) {
+                    val action = url.substringAfter("zclaw://")
+                    when (action) {
+                        "engines" -> {
+                            runOnUiThread { showEngineMenu() }
+                            return true
+                        }
+                        "codex" -> {
+                            runOnUiThread { openCodexEngine() }
+                            return true
+                        }
+                        "opencode" -> {
+                            runOnUiThread { openOpenCodeEngine() }
+                            return true
+                        }
+                    }
+                }
+                return false
+            }
 
             override fun onReceivedError(
                 view: WebView,
@@ -322,17 +341,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        updateStatus("Authenticated")
+        updateStatus("Logged in ✓", "تم تسجيل الدخول بنجاح — عد الآن إلى التطبيق")
 
         // Step 6: Health check (informational only — never blocks)
-        updateStatus("Verifying API access…", "Optional connectivity check")
+        updateStatus("Verifying API access…", "فحص اتصال اختياري")
         val healthOk = serverManager.healthCheck { msg -> updateDetail(msg) }
         if (!healthOk) {
             Log.w(TAG, "Health check failed — continuing anyway (login already confirmed)")
             runOnUiThread {
                 Toast.makeText(
                     this,
-                    "Connectivity check failed — continuing anyway.",
+                    "فحص الاتصال الاختياري لم يكتمل — لا مشكلة، المتابعة آمنة.",
                     Toast.LENGTH_LONG,
                 ).show()
             }
@@ -466,9 +485,11 @@ class MainActivity : AppCompatActivity() {
                             openOpenCodeEngine()
                         } else {
                             setOpenCodeState(false, getString(R.string.engine_status_stopped))
+                            val tail = openCodeEngine.lastError()
+                            val detail = if (tail.isNotEmpty()) "\n\n$tail" else ""
                             AlertDialog.Builder(this)
                                 .setTitle(R.string.engine_opencode_fail_title)
-                                .setMessage(R.string.engine_opencode_fail_msg)
+                                .setMessage(getString(R.string.engine_opencode_fail_msg) + detail)
                                 .setPositiveButton(android.R.string.ok, null)
                                 .show()
                         }

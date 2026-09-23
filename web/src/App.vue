@@ -77,6 +77,12 @@
             />
           </template>
           <template #actions>
+            <EngineBar
+              :models="availableModelIds"
+              :selected-model="selectedModelId"
+              :disabled="availableModelIds.length === 0"
+              @update:selected-model="onSelectModel"
+            />
             <SettingsPanel />
           </template>
         </ContentHeader>
@@ -138,6 +144,7 @@ import IconTablerSearch from './components/icons/IconTablerSearch.vue'
 import IconTablerX from './components/icons/IconTablerX.vue'
 import { useDesktopState } from './composables/useDesktopState'
 import SettingsPanel from './components/layout/SettingsPanel.vue'
+import EngineBar from './components/layout/EngineBar.vue'
 import type { ReasoningEffort, ThreadScrollState } from './types/codex'
 
 const SIDEBAR_COLLAPSED_STORAGE_KEY = 'codex-web-local.sidebar-collapsed.v1'

@@ -72,6 +72,7 @@ export const en: I18nTable = {
   projectMenu: 'Project',
   autoRefreshIn: 'Auto refresh in',
   enableAutoRefresh: 'Enable 4s refresh',
+  engineHome: 'Home',
 }
 
 export const ar: I18nTable = {
@@ -140,6 +141,7 @@ export const ar: I18nTable = {
   projectMenu: 'المشروع',
   autoRefreshIn: 'تحديث تلقائي بعد',
   enableAutoRefresh: 'تفعيل التحديث كل 4 ثوانٍ',
+  engineHome: 'الرئيسية',
 }
 
 const TABLES: Record<SupportedLang, I18nTable> = { en, ar }
