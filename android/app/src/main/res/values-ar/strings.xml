@@ -18,7 +18,7 @@
     <string name="retry">إعادة المحاولة</string>
     <string name="engine_picker_title">اختر محرك الذكاء</string>
     <string name="engine_picker_subtitle">اختر واحداً لبدء المحادثة</string>
-    <string name="engine_picker_footer">zclaw 1.9.1 · المحركات تعمل على الجهاز وجاهزة دون اتصال</string>
+    <string name="engine_picker_footer">zclaw 1.9.2 · المحركات تعمل على الجهاز وجاهزة دون اتصال</string>
     <string name="engine_codex">كودكس</string>
     <string name="engine_codex_desc">وكيل برمجة من OpenAI — جاهز ويعمل</string>
     <string name="engine_opencode">أوبن كود</string>

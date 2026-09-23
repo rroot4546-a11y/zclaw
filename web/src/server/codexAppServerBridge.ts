@@ -105,6 +105,19 @@ class AppServerProcess {
     const proc = spawn('codex', ['app-server'], { stdio: ['pipe', 'pipe', 'pipe'] })
     this.process = proc
 
+    // Writing to a child that has already exited must never crash the server.
+    proc.stdin.on('error', (error: NodeJS.ErrnoException) => {
+      if (error.code !== 'EPIPE') {
+        process.stderr.write(`codex stdin error: ${error.message}\n`)
+      }
+    })
+    proc.stdout.on('error', () => {
+      // ignore read errors after the child dies
+    })
+    proc.stderr.on('error', () => {
+      // ignore read errors after the child dies
+    })
+
     proc.stdout.setEncoding('utf8')
     proc.stdout.on('data', (chunk: string) => {
       this.readBuffer += chunk
@@ -143,14 +156,34 @@ class AppServerProcess {
       this.initialized = false
       this.readBuffer = ''
     })
+
+    // CRITICAL: a failed spawn (missing binary, bad interpreter, EACCES) must
+    // NEVER crash the web server. Without this listener Node treats the
+    // 'error' event as uncaught and terminates the whole process.
+    proc.on('error', (error: NodeJS.ErrnoException) => {
+      const failure = new Error(`failed to start codex app-server: ${error.message}`)
+      for (const request of this.pending.values()) {
+        request.reject(failure)
+      }
+
+      this.pending.clear()
+      this.pendingServerRequests.clear()
+      this.process = null
+      this.initialized = false
+      this.readBuffer = ''
+    })
   }
 
   private sendLine(payload: Record<string, unknown>): void {
-    if (!this.process) {
+    if (!this.process || this.process.stdin.destroyed) {
       throw new Error('codex app-server is not running')
     }
 
-    this.process.stdin.write(`${JSON.stringify(payload)}\n`)
+    try {
+      this.process.stdin.write(`${JSON.stringify(payload)}\n`)
+    } catch (error) {
+      throw new Error(`failed to write to codex app-server: ${error instanceof Error ? error.message : String(error)}`)
+    }
   }
 
   private handleLine(line: string): void {

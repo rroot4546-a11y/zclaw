@@ -38,13 +38,8 @@
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
   },
-  "dependencies": {
-    "commander": "^13.1.0",
-    "express": "^5.1.0"
-  },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.18",
-    "@types/express": "^5.0.0",
     "@types/node": "^22.13.2",
     "@vitejs/plugin-vue": "^5.2.1",
     "tailwindcss": "^4.1.18",

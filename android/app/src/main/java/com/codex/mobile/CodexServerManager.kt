@@ -180,8 +180,8 @@ class CodexServerManager(private val context: Context) {
             if [ -f "${'$'}CODEX_JS" ]; then
                 rm -f "$prefix/bin/codex"
                 cat > "$prefix/bin/codex" << 'WEOF'
-#!/data/user/0/com.codex.mobile/files/usr/bin/sh
-exec /data/user/0/com.codex.mobile/files/usr/bin/node /data/user/0/com.codex.mobile/files/usr/lib/node_modules/@openai/codex/bin/codex.js "${'$'}@"
+#!$prefix/bin/sh
+exec $prefix/bin/node $prefix/lib/node_modules/@openai/codex/bin/codex.js "${'$'}@"
 WEOF
                 chmod 700 "$prefix/bin/codex"
             fi
@@ -190,8 +190,8 @@ WEOF
             if [ -f "${'$'}NPM_CLI" ]; then
                 rm -f "$prefix/bin/npm"
                 cat > "$prefix/bin/npm" << 'WEOF'
-#!/data/user/0/com.codex.mobile/files/usr/bin/sh
-exec /data/user/0/com.codex.mobile/files/usr/bin/node /data/user/0/com.codex.mobile/files/usr/lib/node_modules/npm/bin/npm-cli.js "${'$'}@"
+#!$prefix/bin/sh
+exec $prefix/bin/node $prefix/lib/node_modules/npm/bin/npm-cli.js "${'$'}@"
 WEOF
                 chmod 700 "$prefix/bin/npm"
             fi
@@ -540,7 +540,7 @@ H3
         val systemctlStub = File(prefix, "bin/systemctl")
         if (!systemctlStub.exists()) {
             systemctlStub.writeText(
-                "#!/data/user/0/com.codex.mobile/files/usr/bin/sh\n" +
+                "#!$prefix/bin/sh\n" +
                     "exit 0\n"
             )
             systemctlStub.setExecutable(true)
@@ -1017,14 +1017,15 @@ H3
         val codexJs = File(prefix, "lib/node_modules/@openai/codex/bin/codex.js")
         val codexBin = File(prefix, "bin/codex")
 
+        // Always (re)write the wrapper with the CURRENT filesDir paths so
+        // installs from older builds (with a hardcoded package path) self-heal.
         if (!codexJs.exists()) return
-        if (codexBin.exists()) return
 
         val wrapperCmd = """
             rm -f "$prefix/bin/codex"
             cat > "$prefix/bin/codex" << 'WEOF'
-#!/data/user/0/com.codex.mobile/files/usr/bin/sh
-exec /data/user/0/com.codex.mobile/files/usr/bin/node /data/user/0/com.codex.mobile/files/usr/lib/node_modules/@openai/codex/bin/codex.js "${'$'}@"
+#!$prefix/bin/sh
+exec $prefix/bin/node $prefix/lib/node_modules/@openai/codex/bin/codex.js "${'$'}@"
 WEOF
             chmod 700 "$prefix/bin/codex"
             echo "codex wrapper created"
@@ -1215,10 +1216,11 @@ WEOF
     private fun codexBinPath(): String {
         val paths = BootstrapInstaller.getPaths(context)
         return "${paths.prefixDir}/lib/node_modules/@openai/codex-linux-arm64" +
-            "/vendor/aarch64-unknown-linux-musl/codex/codex"
+            "/vendor/aarch64-unknown-linux-musl/bin/codex"
     }
 
     fun isLoggedIn(): Boolean {
+        if (!File(codexBinPath()).exists()) return false
         val output = runCapture("${codexBinPath()} login status 2>&1")
         Log.i(TAG, "Login status: $output")
         return !output.contains("Not logged in", ignoreCase = true)

@@ -209,7 +209,9 @@ object BootstrapInstaller {
             sourcesList.writeText(
                 content
                     .replace("https://", "http://")
-                    .replace("com.termux", "com.codex.mobile")
+                    // Keep /data/data/com.termux/... as-is: proot remaps it to
+                    // our prefix at runtime. A hardcoded app path here would
+                    // (and did) point to a nonexistent directory.
             )
         }
 

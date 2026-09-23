@@ -1,5 +1,5 @@
 import { randomBytes, timingSafeEqual } from 'node:crypto'
-import type { RequestHandler, Request, Response, NextFunction } from 'express'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
 const TOKEN_COOKIE = 'codex_web_local_token'
 
@@ -21,6 +21,12 @@ function parseCookies(header: string | undefined): Record<string, string> {
     cookies[key] = value
   }
   return cookies
+}
+
+function sendJson(res: ServerResponse, statusCode: number, payload: unknown): void {
+  res.statusCode = statusCode
+  res.setHeader('Content-Type', 'application/json; charset=utf-8')
+  res.end(JSON.stringify(payload))
 }
 
 const LOGIN_PAGE_HTML = `<!DOCTYPE html>
@@ -65,22 +71,29 @@ form.addEventListener('submit',async e=>{
 </body>
 </html>`
 
-export function createAuthMiddleware(password: string): RequestHandler {
+export type AuthMiddleware = (req: IncomingMessage, res: ServerResponse, next: () => void) => void
+
+export function createAuthMiddleware(password: string): AuthMiddleware {
   const validTokens = new Set<string>()
 
-  return (req: Request, res: Response, next: NextFunction): void => {
+  return (req: IncomingMessage, res: ServerResponse, next: () => void): void => {
+    const url = new URL(req.url ?? '/', 'http://localhost')
+    const pathname = url.pathname
+
     // Handle login POST
-    if (req.method === 'POST' && req.path === '/auth/login') {
+    if (req.method === 'POST' && pathname === '/auth/login') {
       let body = ''
       req.setEncoding('utf8')
-      req.on('data', (chunk: string) => { body += chunk })
+      req.on('data', (chunk: string) => {
+        body += chunk
+      })
       req.on('end', () => {
         try {
           const parsed = JSON.parse(body) as { password?: string }
           const provided = typeof parsed.password === 'string' ? parsed.password : ''
 
           if (!constantTimeCompare(provided, password)) {
-            res.status(401).json({ error: 'Invalid password' })
+            sendJson(res, 401, { error: 'Invalid password' })
             return
           }
 
@@ -88,9 +101,9 @@ export function createAuthMiddleware(password: string): RequestHandler {
           validTokens.add(token)
 
           res.setHeader('Set-Cookie', `${TOKEN_COOKIE}=${token}; Path=/; HttpOnly; SameSite=Strict`)
-          res.json({ ok: true })
+          sendJson(res, 200, { ok: true })
         } catch {
-          res.status(400).json({ error: 'Invalid request body' })
+          sendJson(res, 400, { error: 'Invalid request body' })
         }
       })
       return
@@ -107,6 +120,7 @@ export function createAuthMiddleware(password: string): RequestHandler {
 
     // No valid session — serve login page
     res.setHeader('Content-Type', 'text/html; charset=utf-8')
-    res.status(200).send(LOGIN_PAGE_HTML)
+    res.statusCode = 200
+    res.end(LOGIN_PAGE_HTML)
   }
 }
