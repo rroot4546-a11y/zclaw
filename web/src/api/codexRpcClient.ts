@@ -27,12 +27,29 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     : null
 }
 
+const RPC_TIMEOUT_MS = 120_000
+
+async function fetchWithTimeout(url: string, init: RequestInit = {}): Promise<Response> {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), RPC_TIMEOUT_MS)
+  try {
+    return await fetch(url, { ...init, signal: controller.signal })
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(`Request to ${url} timed out after ${RPC_TIMEOUT_MS / 1000}s`)
+    }
+    throw error
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
 export async function rpcCall<T>(method: string, params?: unknown): Promise<T> {
   const body: RpcRequestBody = { method, params: params ?? null }
 
   let response: Response
   try {
-    response = await fetch('/codex-api/rpc', {
+    response = await fetchWithTimeout('/codex-api/rpc', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

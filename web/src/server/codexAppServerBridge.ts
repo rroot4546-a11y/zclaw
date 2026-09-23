@@ -123,8 +123,12 @@ class AppServerProcess {
     })
 
     proc.stderr.setEncoding('utf8')
-    proc.stderr.on('data', () => {
-      // Keep stderr silent in dev middleware; JSON-RPC errors are forwarded via responses.
+    proc.stderr.on('data', (chunk: string) => {
+      // Forward app-server stderr to our own stderr so Android captures and
+      // surfaces it (server log tail) instead of failing in silence.
+      if (process.stderr.writable) {
+        process.stderr.write(chunk)
+      }
     })
 
     proc.on('exit', () => {
@@ -252,7 +256,7 @@ class AppServerProcess {
     this.start()
     const id = this.nextId++
 
-    return new Promise((resolve, reject) => {
+    const result = new Promise((resolve, reject) => {
       this.pending.set(id, { resolve, reject })
 
       this.sendLine({
@@ -261,6 +265,26 @@ class AppServerProcess {
         method,
         params,
       } satisfies JsonRpcCall)
+    })
+
+    // A hung or unresponsive `codex app-server` must never freeze the UI.
+    // Return an actionable error after 90s instead of waiting forever.
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        this.pending.delete(id)
+        reject(new Error(`RPC "${method}" timed out after 90s — codex app-server is not responding`))
+      }, 90_000)
+
+      result.then(
+        (value) => {
+          clearTimeout(timer)
+          resolve(value)
+        },
+        (reason) => {
+          clearTimeout(timer)
+          reject(reason)
+        },
+      )
     })
   }
 

@@ -359,11 +359,16 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Step 9: Wait for ready
-        updateStatus("Waiting for server…")
-        val ready = serverManager.waitForServer(timeoutMs = 90_000)
-        if (!ready) {
-            throw RuntimeException("Server did not start in time")
+        updateStatus("Waiting for server…", "Starting…")
+        val ready = serverManager.waitForServer(timeoutMs = 90_000) { line ->
+            updateStatus("Waiting for server…", line)
         }
+        if (!ready) {
+            val tail = serverManager.serverLogTail()
+            val detail = if (tail.isNotEmpty()) "\n\nLast server output:\n$tail" else ""
+            throw RuntimeException("Server did not start in time.$detail")
+        }
+        updateStatus("Server ready")
 
         // Step 10: Show engine picker
         runOnUiThread {

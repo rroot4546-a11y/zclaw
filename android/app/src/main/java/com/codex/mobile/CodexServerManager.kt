@@ -1395,6 +1395,8 @@ WEOF
             return false
         }
 
+        killStaleServer()
+
         val shell = "${paths.prefixDir}/bin/sh"
         val command = "exec node $serverScript --port $SERVER_PORT --no-password"
 
@@ -1414,6 +1416,7 @@ WEOF
             var line = reader.readLine()
             while (line != null) {
                 Log.d(TAG, "[server] $line")
+                pushServerLog(line)
                 line = reader.readLine()
             }
             Log.i(TAG, "Server process exited with code: ${proc.waitFor()}")
@@ -1422,9 +1425,57 @@ WEOF
         return true
     }
 
-    fun waitForServer(timeoutMs: Long = 60_000): Boolean {
+    /**
+     * Kill any stale node server that may still hold SERVER_PORT from a
+     * previous run (e.g. after a crash). This avoids "EADDRINUSE" and
+     * zombie listeners that answer with a broken UI.
+     */
+    private fun killStaleServer() {
+        runInPrefix(
+            """
+            for pid in ${'$'}(ls /proc 2>/dev/null | grep '^[0-9]'); do
+                if cat /proc/${'$'}pid/cmdline 2>/dev/null | tr '\0' ' ' | grep -q '$SERVER_PORT'; then
+                    kill -9 ${'$'}pid 2>/dev/null
+                fi
+            done
+            sleep 1
+            echo "stale server cleaned"
+            """.trimIndent(),
+        ) { Log.d(TAG, "[cleanup] $it") }
+    }
+
+    private val recentServerLog = ArrayDeque<String>()
+
+    private fun pushServerLog(line: String) {
+        val clean = line.replace(Regex("\\x1b\\[[0-9;]*m"), "").trim()
+        if (clean.isEmpty()) return
+        synchronized(recentServerLog) {
+            recentServerLog.addLast(clean)
+            while (recentServerLog.size > 24) {
+                recentServerLog.removeFirst()
+            }
+        }
+    }
+
+    /**
+     * The most recent server output lines, newest first. Used to surface
+     * real errors to the user instead of a silent hang.
+     */
+    fun serverLogTail(maxLines: Int = 8): String {
+        synchronized(recentServerLog) {
+            val take = recentServerLog.size.coerceAtMost(maxLines)
+            if (take == 0) return ""
+            return recentServerLog.takeLast(take).joinToString("\n")
+        }
+    }
+
+    fun waitForServer(
+        timeoutMs: Long = 60_000,
+        onTick: ((String) -> Unit)? = null,
+    ): Boolean {
         val deadline = System.currentTimeMillis() + timeoutMs
         val url = URL("http://127.0.0.1:$SERVER_PORT/")
+        var lastTick = 0L
 
         while (System.currentTimeMillis() < deadline) {
             try {
@@ -1441,6 +1492,14 @@ WEOF
             } catch (_: Exception) {
                 // Not ready yet
             }
+
+            val now = System.currentTimeMillis()
+            if (onTick != null && now - lastTick >= 4000) {
+                lastTick = now
+                val lastLog = serverLogTail(maxLines = 1)
+                onTick(lastLog.ifEmpty { "Server is starting…" })
+            }
+
             Thread.sleep(500)
         }
 
