@@ -18,7 +18,7 @@
     <string name="retry">Retry</string>
     <string name="engine_picker_title">Choose your AI engine</string>
     <string name="engine_picker_subtitle">Pick one to start chatting</string>
-    <string name="engine_picker_footer">zclaw 1.6.0 · engines run on-device, offline-ready</string>
+    <string name="engine_picker_footer">zclaw 1.7.0 · engines run on-device, offline-ready</string>
     <string name="engine_codex">Codex</string>
     <string name="engine_codex_desc">OpenAI coding agent — ready and working</string>
     <string name="engine_opencode">OpenCode</string>

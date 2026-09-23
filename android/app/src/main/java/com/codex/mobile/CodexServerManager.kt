@@ -20,7 +20,7 @@ class CodexServerManager(private val context: Context) {
         private const val TAG = "CodexServerManager"
         const val SERVER_PORT = 18923
         private const val PROXY_PORT = 18924
-        private const val CODEX_VERSION = "0.104.0"
+        private const val CODEX_VERSION = "0.156.1"
         const val OPENCLAW_GATEWAY_PORT = 18789
         const val OPENCLAW_CONTROL_UI_PORT = 19001
     }
@@ -95,7 +95,9 @@ class CodexServerManager(private val context: Context) {
 
     fun isCodexInstalled(): Boolean {
         val paths = BootstrapInstaller.getPaths(context)
-        return File(paths.prefixDir, "lib/node_modules/@openai/codex/bin/codex.js").exists()
+        return packageVersion(
+            File(paths.prefixDir, "lib/node_modules/@openai/codex/package.json"),
+        ) == CODEX_VERSION
     }
 
     fun isServerBundleInstalled(): Boolean = false
@@ -106,10 +108,23 @@ class CodexServerManager(private val context: Context) {
      */
     fun isPlatformBinaryInstalled(): Boolean {
         val paths = BootstrapInstaller.getPaths(context)
-        return File(
-            paths.prefixDir,
-            "lib/node_modules/@openai/codex-linux-arm64/vendor/aarch64-unknown-linux-musl/codex/codex",
-        ).exists()
+        val pkgDir = File(paths.prefixDir, "lib/node_modules/@openai/codex-linux-arm64")
+        val binary = File(
+            pkgDir,
+            "vendor/aarch64-unknown-linux-musl/bin/codex",
+        )
+        return binary.exists() &&
+            packageVersion(File(pkgDir, "package.json")) == CODEX_VERSION
+    }
+
+    private fun packageVersion(packageJson: File): String? {
+        if (!packageJson.exists()) return null
+        return try {
+            val m = Regex("\"version\"\\s*:\\s*\"([^\"]+)\"").find(packageJson.readText())
+            m?.groupValues?.get(1)
+        } catch (_: Exception) {
+            null
+        }
     }
 
     // ── Installation ────────────────────────────────────────────────────────
@@ -982,7 +997,7 @@ H3
 
         onProgress("Installing Codex CLI…")
         val codexCode = runInPrefix(
-            "node $npmCli install -g @openai/codex 2>&1",
+            "node $npmCli install -g @openai/codex@$CODEX_VERSION 2>&1",
             onOutput = { onProgress(it) },
         )
         if (codexCode != 0) {
@@ -1070,10 +1085,12 @@ WEOF
               }).on("error", (e) => { console.error(e.message); process.exit(1); });
             ' 2>&1 &&
             tar xzf codex-bin.tgz 2>&1 &&
-            mkdir -p "$targetPkg/vendor/aarch64-unknown-linux-musl/codex" &&
-            cp package/vendor/aarch64-unknown-linux-musl/codex/codex "$targetPkg/vendor/aarch64-unknown-linux-musl/codex/codex" &&
+            rm -rf "$targetPkg/vendor" &&
+            mkdir -p "$targetPkg/vendor" &&
+            cp -a package/vendor/aarch64-unknown-linux-musl "$targetPkg/vendor/" &&
             cp package/package.json "$targetPkg/package.json" &&
-            chmod 700 "$targetPkg/vendor/aarch64-unknown-linux-musl/codex/codex" &&
+            chmod 700 "$targetPkg/vendor/aarch64-unknown-linux-musl/bin/codex" &&
+            chmod 700 "$targetPkg/vendor/aarch64-unknown-linux-musl/bin/codex-code-mode-host" &&
             rm -rf "$prefix/tmp/_codex_bin" &&
             echo "Platform binary installed"
         """.trimIndent()
