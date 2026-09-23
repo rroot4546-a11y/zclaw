@@ -114,7 +114,9 @@ class CodexServerManager(private val context: Context) {
             "vendor/aarch64-unknown-linux-musl/bin/codex",
         )
         return binary.exists() &&
-            packageVersion(File(pkgDir, "package.json")) == CODEX_VERSION
+            packageVersion(File(pkgDir, "package.json"))
+                ?.substringBefore('-')
+                ?.trim() == CODEX_VERSION
     }
 
     private fun packageVersion(packageJson: File): String? {
@@ -1054,54 +1056,89 @@ WEOF
 
     /**
      * Install the platform-specific native Codex binary.
-     * npm refuses to install it on android (os mismatch), so we download
-     * the tarball via Node.js and extract it manually.
+     * npm refuses to install it on Android (os mismatch), so we download
+     * the npm tarball with our own resumable downloader and extract it.
+     * Every step is verified; failures are retried and reported clearly.
      */
     fun installPlatformBinary(onProgress: (String) -> Unit): Boolean {
         val paths = BootstrapInstaller.getPaths(context)
         val prefix = paths.prefixDir
         val targetPkg = "$prefix/lib/node_modules/@openai/codex-linux-arm64"
+        val dlDir = "$prefix/tmp/_codex_bin"
+        val tgzUrl = "https://registry.npmjs.org/@openai/codex/-/codex-$CODEX_VERSION-linux-arm64.tgz"
+        val tgzSize = 141_660_337L
 
-        onProgress("Downloading Codex native binary…")
-
-        // Use Node.js (which has working TLS) to download the npm tarball
-        val installCmd = """
-            mkdir -p "$prefix/tmp/_codex_bin" && cd "$prefix/tmp/_codex_bin" &&
-            node -e '
-              const https = require("https");
-              const fs = require("fs");
-              const url = "https://registry.npmjs.org/@openai/codex/-/codex-$CODEX_VERSION-linux-arm64.tgz";
-              const file = fs.createWriteStream("codex-bin.tgz");
-              https.get(url, (res) => {
-                if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-                  https.get(res.headers.location, (r2) => r2.pipe(file).on("finish", () => {
-                    file.close(); console.log("Downloaded"); process.exit(0);
-                  }));
-                } else {
-                  res.pipe(file).on("finish", () => {
-                    file.close(); console.log("Downloaded"); process.exit(0);
-                  });
+        // Extract the resumable downloader script (always fresh from assets)
+        try {
+            context.assets.open("dl-codex.js").use { input ->
+                File(dlDir, "dl.js").apply { parentFile?.mkdirs() }.outputStream().use { output ->
+                    input.copyTo(output)
                 }
-              }).on("error", (e) => { console.error(e.message); process.exit(1); });
-            ' 2>&1 &&
-            tar xzf codex-bin.tgz 2>&1 &&
-            rm -rf "$targetPkg/vendor" &&
-            mkdir -p "$targetPkg/vendor" &&
-            cp -a package/vendor/aarch64-unknown-linux-musl "$targetPkg/vendor/" &&
-            cp package/package.json "$targetPkg/package.json" &&
-            chmod 700 "$targetPkg/vendor/aarch64-unknown-linux-musl/bin/codex" &&
-            chmod 700 "$targetPkg/vendor/aarch64-unknown-linux-musl/bin/codex-code-mode-host" &&
-            rm -rf "$prefix/tmp/_codex_bin" &&
-            echo "Platform binary installed"
-        """.trimIndent()
-
-        val code = runInPrefix(installCmd, onOutput = { onProgress(it) })
-        if (code != 0) {
-            Log.e(TAG, "Platform binary install failed with code $code")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to extract dl-codex.js: ${e.message}")
             return false
         }
 
-        return isPlatformBinaryInstalled()
+        onProgress("Downloading Codex native binary (${tgzSize / 1_000_000} MB)…")
+
+        for (attempt in 1..3) {
+            if (attempt > 1) {
+                onProgress("Retry $attempt/3 — resuming download…")
+            }
+
+            // 1) Download (resumable, integrity-checked by the script itself)
+            val dlCode = runInPrefix(
+                "mkdir -p \"$dlDir\" && cd \"$dlDir\" && " +
+                    "CODEX_TGZ_URL=\"$tgzUrl\" CODEX_TGZ_SIZE=$tgzSize node \"$dlDir/dl.js\"",
+                onOutput = { onProgress(it) },
+            )
+            if (dlCode != 0) {
+                Log.w(TAG, "Codex tgz download failed, attempt $attempt/3")
+                continue
+            }
+
+            // 2) Verify the tarball is a real gzip stream before touching anything
+            val verifyCode = runInPrefix(
+                "cd \"$dlDir\" && gzip -t codex-bin.tgz && echo tgz OK",
+                onOutput = { onProgress(it) },
+            )
+            if (verifyCode != 0) {
+                Log.w(TAG, "Codex tgz failed gzip -t, attempt $attempt/3")
+                runInPrefix("rm -f \"$dlDir/codex-bin.tgz\"")
+                continue
+            }
+
+            // 3) Extract and install into the prefix
+            val installCmd = """
+                cd "$dlDir" &&
+                rm -rf package &&
+                tar xzf codex-bin.tgz &&
+                test -f package/vendor/aarch64-unknown-linux-musl/bin/codex &&
+                rm -rf "$targetPkg/vendor" &&
+                mkdir -p "$targetPkg/vendor" &&
+                cp -a package/vendor/aarch64-unknown-linux-musl "$targetPkg/vendor/" &&
+                cp package/package.json "$targetPkg/package.json" &&
+                chmod 700 "$targetPkg/vendor/aarch64-unknown-linux-musl/bin/codex" &&
+                chmod 700 "$targetPkg/vendor/aarch64-unknown-linux-musl/bin/codex-code-mode-host" &&
+                rm -rf package &&
+                echo "Platform binary installed"
+            """.trimIndent()
+            val installCode = runInPrefix(installCmd, onOutput = { onProgress(it) })
+            if (installCode != 0) {
+                Log.w(TAG, "Codex tarball extraction/install failed, attempt $attempt/3")
+                runInPrefix("rm -f \"$dlDir/codex-bin.tgz\"")
+                continue
+            }
+
+            if (isPlatformBinaryInstalled()) {
+                runInPrefix("rm -rf \"$dlDir\"")
+                return true
+            }
+        }
+
+        Log.e(TAG, "Platform binary install failed after 3 attempts")
+        return false
     }
 
     // ── Proxy ────────────────────────────────────────────────────────────────
