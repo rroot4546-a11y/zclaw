@@ -6,6 +6,7 @@
       :disabled="disabled"
       @click="onToggle"
     >
+      <span v-if="prefix" class="composer-dropdown-prefix">{{ prefix }}</span>
       <span class="composer-dropdown-value">{{ selectedLabel }}</span>
       <IconTablerChevronDown class="composer-dropdown-chevron" />
     </button>
@@ -19,6 +20,9 @@
       }"
     >
       <ul class="composer-dropdown-menu" role="listbox">
+        <li v-if="options.length === 0" class="composer-dropdown-empty">
+          {{ resolvedEmptyText }}
+        </li>
         <li v-for="option in options" :key="option.value">
           <button
             class="composer-dropdown-option"
@@ -36,6 +40,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { t } from '../../i18n'
 import IconTablerChevronDown from '../icons/IconTablerChevronDown.vue'
 
 type DropdownOption = {
@@ -47,6 +52,8 @@ const props = defineProps<{
   modelValue: string
   options: DropdownOption[]
   placeholder?: string
+  prefix?: string
+  emptyText?: string
   disabled?: boolean
   openDirection?: 'up' | 'down'
 }>()
@@ -63,6 +70,8 @@ const selectedLabel = computed(() => {
   if (selected) return selected.label
   return props.placeholder?.trim() || ''
 })
+
+const resolvedEmptyText = computed(() => props.emptyText || t('dropdownEmpty'))
 
 const openDirection = computed(() => props.openDirection ?? 'down')
 
@@ -113,6 +122,14 @@ onBeforeUnmount(() => {
 
 .composer-dropdown-value {
   @apply whitespace-nowrap text-left;
+}
+
+.composer-dropdown-prefix {
+  @apply whitespace-nowrap text-left font-medium;
+}
+
+.composer-dropdown-empty {
+  @apply rounded-lg px-3 py-2 text-xs text-zinc-400;
 }
 
 .composer-dropdown-chevron {

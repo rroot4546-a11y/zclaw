@@ -447,17 +447,8 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread { setStatus("OpenCode engine", "Preparing runtime…") }
                 }
 
-                var apiKey = openCodeEngine.getSavedApiKey()
-                if (apiKey.isBlank()) {
-                    apiKey = requestApiKey()
-                    if (apiKey.isBlank()) {
-                        throw RuntimeException("No API key provided")
-                    }
-                    openCodeEngine.saveApiKey(apiKey)
-                }
-
                 runOnUiThread { setStatus("OpenCode engine", "Starting server…") }
-                openCodeEngine.start(apiKey) { ok ->
+                openCodeEngine.start { ok ->
                     runOnUiThread {
                         showLoading(false)
                         if (ok) {

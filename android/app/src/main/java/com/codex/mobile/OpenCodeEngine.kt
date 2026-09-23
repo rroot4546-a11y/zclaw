@@ -25,8 +25,13 @@ class OpenCodeEngine(private val context: Context) {
         const val HTTP_URL = "http://127.0.0.1:$PORT/"
         private const val ENGINE_ZIP_URL =
             "https://github.com/rroot4546-a11y/zclaw-builds/releases/download/v1.2.0/engine.zip"
-        private const val PREFS = "zclaw.settings"
-        private const val KEY_API = "zclaw.opencode.apikey"
+private const val PREFS = "zclaw.settings"
+    private const val KEY_API = "zclaw.opencode.apikey"
+    @Suppress("unused")
+    private const val LEGACY_KEY_API = "zclaw.api.key"
+    private const val DEFAULT_HOME = "/root"
+    private const val DEFAULT_CONFIG_DIR = "/root/.config/opencode"
+    private const val DEFAULT_DATA_DIR = "/root/.local/share/opencode"
     }
 
     data class State(val running: Boolean, val message: String, val installed: Boolean)
@@ -166,40 +171,37 @@ class OpenCodeEngine(private val context: Context) {
     }
 
     /**
-     * Ensure the config file inside the rootfs exists with the user's API key.
+     * Ensure a minimal config exists inside the rootfs. No API key is required:
+     * OpenCode ships the free "opencode" (Zen) provider and a models catalog
+     * (Models.dev), so models can be picked/connected from the web UI itself.
      */
-    private fun ensureConfig(apiKey: String) {
-        val config = engineRoot("root/.config/opencode/opencode.json")
-        config.parentFile?.mkdirs()
+    private fun ensureConfig() {
+        val config = engineRoot(DEFAULT_CONFIG_DIR)
+        val data = engineRoot(DEFAULT_DATA_DIR)
+        config.mkdirs()
         val content = """
             {
               "provider": {
-                "openai": {
-                  "options": {
-                    "apiKey": "$apiKey",
-                    "model": "gpt-5.2-codex",
-                    "small_model": "gpt-5.2-codex-mini"
-                  }
-                }
+                "opencode": {}
               },
-              "data": "${engineRoot("root/.local/share/opencode")}",
+              "data": "${data.absolutePath}",
               "disableTelemetry": true
             }
         """.trimIndent()
-        config.writeText(content)
+        File(config, "opencode.json").writeText(content)
     }
 
     /**
      * Start `opencode serve` inside a minimal glibc rootfs via proot.
      * Returns once the web UI responds on PORT.
      */
-    fun start(apiKey: String, onReady: (Boolean) -> Unit) {
+    fun start(onReady: (Boolean) -> Unit) {
         try {
             if (isRunning) {
                 onReady(true)
                 return
             }
-            ensureConfig(apiKey)
+            ensureConfig()
             launch()
             val ok = waitReady(timeoutMs = 60_000)
             onReady(ok)
@@ -238,8 +240,7 @@ class OpenCodeEngine(private val context: Context) {
 
         val pb = ProcessBuilder(cmd)
         pb.environment().clear()
-        pb.environment()["HOME"] = "/root"
-        pb.environment()["OPENAI_API_KEY"] = getSavedApiKey()
+        pb.environment()["HOME"] = DEFAULT_HOME
         pb.redirectErrorStream(true)
         @Suppress("DiscouragedApi")
         pb.directory(engineRoot(""))

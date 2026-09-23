@@ -15,9 +15,10 @@
           class="thread-composer-control"
           :model-value="selectedModel"
           :options="modelOptions"
+          :prefix="t('model')"
           :placeholder="t('model')"
           open-direction="up"
-          :disabled="disabled || !activeThreadId || models.length === 0 || isTurnInProgress"
+          :disabled="disabled || !activeThreadId || isTurnInProgress"
           @update:model-value="onModelSelect"
         />
 
@@ -25,6 +26,7 @@
           class="thread-composer-control"
           :model-value="selectedReasoningEffort"
           :options="reasoningOptions"
+          :prefix="t('thinking')"
           :placeholder="t('thinking')"
           open-direction="up"
           :disabled="disabled || !activeThreadId || isTurnInProgress"

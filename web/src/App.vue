@@ -85,7 +85,7 @@
           <template v-if="isHomeRoute">
             <div class="content-grid">
               <div class="new-thread-empty">
-                <p class="new-thread-hero">{{ t('hero') }}</p>/p>
+                <p class="new-thread-hero">{{ t('hero') }}</p>
                 <ComposerDropdown class="new-thread-folder-dropdown" :model-value="newThreadCwd"
                   :options="newThreadFolderOptions" placeholder="Choose folder"
                   :disabled="newThreadFolderOptions.length === 0" @update:model-value="onSelectNewThreadFolder" />

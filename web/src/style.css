@@ -570,3 +570,250 @@ html[data-theme='dark'] .message-card[data-role='user'] {
     height: 40px !important;
   }
 }
+
+/* ══ zclaw 2.0 — mobile-first professional chat ════════════════════════ */
+
+/* conversation message bubbles */
+.message-body {
+  max-width: 100%;
+}
+
+.conversation-item {
+  width: 100%;
+}
+
+.message-card[data-role='assistant'],
+.message-card[data-role='system'] {
+  background-color: rgba(30, 41, 59, 0.55) !important;
+  border: 1px solid rgba(148, 163, 184, 0.14) !important;
+  border-radius: 18px 18px 18px 4px !important;
+  color: #e2e8f0 !important;
+  padding: 12px 16px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25) !important;
+  max-width: min(760px, 100%) !important;
+}
+
+html[data-theme='dark'] .message-text {
+  color: #e2e8f0 !important;
+}
+
+.message-card[data-role='user'] {
+  background: linear-gradient(135deg, #0d9488, #14b8a6) !important;
+  border-radius: 18px 4px 18px 18px !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(13, 148, 136, 0.22) !important;
+}
+
+html[data-theme='dark'] .message-card[data-role='user'] {
+  box-shadow: 0 3px 10px rgba(13, 148, 136, 0.22) !important;
+}
+
+.live-overlay-label {
+  font-weight: 600 !important;
+  color: #94a3b8 !important;
+  font-size: 13px !important;
+}
+
+.live-overlay-reasoning {
+  background-color: rgba(15, 23, 42, 0.65) !important;
+  border: 1px solid rgba(148, 163, 184, 0.12) !important;
+  border-radius: 12px !important;
+  padding: 10px 12px !important;
+  color: #cbd5e1 !important;
+}
+
+/* sticky-ish floating composer */
+.thread-composer {
+  padding: 0 14px calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+  background: linear-gradient(to top, #0b1220 72%, transparent) !important;
+}
+
+.thread-composer-shell {
+  border-radius: 24px !important;
+  padding: 8px 12px !important;
+  background-color: rgba(15, 23, 42, 0.86) !important;
+  border: 1px solid rgba(148, 163, 184, 0.18) !important;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.thread-composer-input {
+  height: 48px !important;
+  font-size: 16px !important;
+  color: #e2e8f0 !important;
+  direction: rtl;
+  text-align: right;
+}
+
+.thread-composer-input::placeholder {
+  color: #64748b;
+}
+
+/* model / thinking pill selectors */
+.thread-composer-controls {
+  gap: 8px !important;
+  flex-wrap: wrap;
+}
+
+.composer-dropdown-trigger {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 34px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(148, 163, 184, 0.2) !important;
+  background-color: rgba(148, 163, 184, 0.12) !important;
+  font-size: 13px !important;
+  color: #cbd5e1 !important;
+  max-width: none !important;
+}
+
+.composer-dropdown-trigger:disabled {
+  opacity: 0.45;
+}
+
+.composer-dropdown-prefix {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+  color: #7d8ea6 !important;
+}
+
+.composer-dropdown-value {
+  max-width: 170px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  color: #e2e8f0 !important;
+}
+
+.composer-dropdown-chevron {
+  width: 14px !important;
+  height: 14px !important;
+  color: #94a3b8 !important;
+}
+
+.composer-dropdown-menu {
+  min-width: 200px !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  border-radius: 14px !important;
+  padding: 6px !important;
+  background-color: #0f172a !important;
+  border: 1px solid #273449 !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.composer-dropdown-option {
+  padding: 9px 12px !important;
+  border-radius: 9px !important;
+  font-size: 13px !important;
+  color: #dbe2ea !important;
+}
+
+.composer-dropdown-option:hover {
+  background-color: #1e293b !important;
+}
+
+.composer-dropdown-empty {
+  padding: 12px !important;
+  font-size: 12px !important;
+  color: #7d8ea6 !important;
+  text-align: start !important;
+}
+
+/* header */
+.content-header {
+  background-color: rgba(15, 23, 42, 0.88) !important;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* light theme overrides for the new layer */
+html[data-theme='light'] .thread-composer {
+  background: linear-gradient(to top, #f6f7f9 72%, transparent) !important;
+}
+
+html[data-theme='light'] .thread-composer-shell {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.10) !important;
+}
+
+html[data-theme='light'] .thread-composer-input {
+  color: #1f2328 !important;
+}
+
+html[data-theme='light'] .message-card[data-role='assistant'],
+html[data-theme='light'] .message-card[data-role='system'] {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  color: #1f2328 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-theme='light'] .message-card[data-role='user'] {
+  background: linear-gradient(135deg, #0d9488, #14b8a6) !important;
+  color: #ffffff !important;
+}
+
+html[data-theme='light'] .composer-dropdown-trigger {
+  background-color: rgba(15, 23, 42, 0.05) !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  color: #1f2328 !important;
+}
+
+html[data-theme='light'] .composer-dropdown-prefix {
+  color: #6b7280 !important;
+}
+
+html[data-theme='light'] .composer-dropdown-value {
+  color: #1f2328 !important;
+}
+
+html[data-theme='light'] .composer-dropdown-menu {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.1) !important;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18) !important;
+}
+
+html[data-theme='light'] .composer-dropdown-option {
+  color: #1f2328 !important;
+}
+
+html[data-theme='light'] .composer-dropdown-option:hover {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] .content-header {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06) !important;
+}
+
+@media (max-width: 767px) {
+  .message-card[data-role='assistant'],
+  .message-card[data-role='system'] {
+    max-width: 92% !important;
+  }
+
+  .message-card[data-role='user'] {
+    max-width: 82% !important;
+  }
+
+  .composer-dropdown-value {
+    max-width: 120px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .composer-dropdown-value {
+    max-width: 96px !important;
+  }
+
+  .composer-dropdown-prefix {
+    display: none !important;
+  }
+}

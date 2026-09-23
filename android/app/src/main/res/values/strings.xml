@@ -18,11 +18,11 @@
     <string name="retry">Retry</string>
     <string name="engine_picker_title">Choose your AI engine</string>
     <string name="engine_picker_subtitle">Pick one to start chatting</string>
-    <string name="engine_picker_footer">zclaw 1.4.0 · engines run on-device, offline-ready</string>
+    <string name="engine_picker_footer">zclaw 1.5.0 · engines run on-device, offline-ready</string>
     <string name="engine_codex">Codex</string>
     <string name="engine_codex_desc">OpenAI coding agent — ready and working</string>
     <string name="engine_opencode">OpenCode</string>
-    <string name="engine_opencode_desc">Agentic coding terminal — setup required</string>
+    <string name="engine_opencode_desc">Agentic coding terminal — free, no API key needed</string>
     <string name="engine_openclaw">OpenClaw</string>
     <string name="engine_openclaw_desc">Personal AI home assistant — account needed</string>
     <string name="engine_status_ready">Ready</string>
@@ -32,7 +32,7 @@
     <string name="engine_status_stopped">Stopped</string>
     <string name="engine_status_running">Running</string>
     <string name="engine_opencode_setup_title">OpenCode engine</string>
-    <string name="engine_opencode_setup_msg">OpenCode needs an OpenAI API key to run. It will be stored locally on this device.</string>
+    <string name="engine_opencode_setup_msg">OpenCode runs fully on-device — no API key required. Pick a free built-in model or connect a provider from inside the app.</string>
     <string name="engine_opencode_fail_title">OpenCode engine</string>
     <string name="engine_opencode_fail_msg">Could not start OpenCode. Please try again.</string>
     <string name="engine_openclaw_dialog_title">OpenClaw engine</string>

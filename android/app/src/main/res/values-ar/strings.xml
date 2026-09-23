@@ -18,11 +18,11 @@
     <string name="retry">إعادة المحاولة</string>
     <string name="engine_picker_title">اختر محرك الذكاء</string>
     <string name="engine_picker_subtitle">اختر واحداً لبدء المحادثة</string>
-    <string name="engine_picker_footer">zclaw 1.4.0 · المحركات تعمل على الجهاز وجاهزة دون اتصال</string>
+    <string name="engine_picker_footer">zclaw 1.5.0 · المحركات تعمل على الجهاز وجاهزة دون اتصال</string>
     <string name="engine_codex">كودكس</string>
     <string name="engine_codex_desc">وكيل برمجة من OpenAI — جاهز ويعمل</string>
     <string name="engine_opencode">أوبن كود</string>
-    <string name="engine_opencode_desc">طرفية برمجة ذكية — يتطلب إعداداً</string>
+    <string name="engine_opencode_desc">طرفية برمجة ذكية — مجانية ولا تحتاج مفتاح API</string>
     <string name="engine_openclaw">أوبن كلاو</string>
     <string name="engine_openclaw_desc">مساعد شخصي ذكي — يتطلب حساباً</string>
     <string name="engine_status_ready">جاهز</string>
@@ -32,7 +32,7 @@
     <string name="engine_status_stopped">متوقف</string>
     <string name="engine_status_running">يعمل</string>
     <string name="engine_opencode_setup_title">محرك أوبن كود</string>
-    <string name="engine_opencode_setup_msg">يتطلب أوبن كود مفتاح OpenAI API للتشغيل. سيُحفظ محلياً على هذا الجهاز.</string>
+    <string name="engine_opencode_setup_msg">يعمل أوبن كود بالكامل على الجهاز — لا حاجة لمفتاح API. اختر نموذجاً مجانياً مدمجاً أو اربط موفّراً من داخل التطبيق.</string>
     <string name="engine_opencode_fail_title">محرك أوبن كود</string>
     <string name="engine_opencode_fail_msg">تعذّر تشغيل أوبن كود. حاول مجدداً.</string>
     <string name="engine_openclaw_dialog_title">محرك أوبن كلاو</string>
