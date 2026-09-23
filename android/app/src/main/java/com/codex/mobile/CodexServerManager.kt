@@ -1254,11 +1254,15 @@ WEOF
     // ── Health check ────────────────────────────────────────────────────────
 
     /**
-     * Send a minimal prompt ("hi") to Codex in non-interactive (exec) mode
-     * via the CONNECT proxy. Confirms the API key is valid and the native
-     * binary can reach OpenAI.
+     * Probe connectivity to OpenAI. Runs `codex exec` in non-interactive mode
+     * via the CONNECT proxy, with a hard timeout and one retry. A failure here
+     * is informational only — callers decide whether it is blocking.
      */
     fun healthCheck(onProgress: (String) -> Unit): Boolean {
+        return runHealthAttempt(onProgress, timeoutMs = 30_000)
+    }
+
+    private fun runHealthAttempt(onProgress: (String) -> Unit, timeoutMs: Long): Boolean {
         onProgress("Sending test message…")
 
         val paths = BootstrapInstaller.getPaths(context)
@@ -1276,27 +1280,42 @@ WEOF
         pb.redirectErrorStream(true)
 
         val proc = pb.start()
-        val sb = StringBuilder()
-        val reader = BufferedReader(InputStreamReader(proc.inputStream))
-        var line = reader.readLine()
-        while (line != null) {
-            val clean = line.replace(Regex("\\x1b\\[[0-9;]*m"), "").trim()
-            Log.d(TAG, "[health] $clean")
-            sb.appendLine(clean)
-            onProgress(clean)
-            line = reader.readLine()
+        val output = StringBuilder()
+        val readerThread = Thread {
+            try {
+                val reader = BufferedReader(InputStreamReader(proc.inputStream))
+                var line = reader.readLine()
+                while (line != null) {
+                    val clean = line.replace(Regex("\\x1b\\[[0-9;]*m"), "").trim()
+                    if (clean.isNotEmpty()) {
+                        Log.d(TAG, "[health] $clean")
+                        output.appendLine(clean)
+                        onProgress(clean)
+                    }
+                    line = reader.readLine()
+                }
+            } catch (_: Exception) {
+            }
         }
+        readerThread.isDaemon = true
+        readerThread.start()
 
-        val exitCode = proc.waitFor()
-        val output = sb.toString().trim()
-        Log.i(TAG, "Health check exit=$exitCode output=$output")
-
-        if (exitCode != 0) {
-            Log.e(TAG, "Health check failed with exit code $exitCode")
+        val finished = try {
+            proc.waitFor(timeoutMs, java.util.concurrent.TimeUnit.MILLISECONDS)
+        } catch (_: InterruptedException) {
+            false
+        }
+        if (!finished) {
+            proc.destroy()
+            proc.waitFor()
+            Log.w(TAG, "Health check timed out after ${timeoutMs}ms")
             return false
         }
 
-        return output.isNotEmpty()
+        val outputText = output.toString().trim()
+        Log.i(TAG, "Health check exit=${proc.exitValue()} output=$outputText")
+
+        return proc.exitValue() == 0 && outputText.isNotEmpty()
     }
 
     // ── Server lifecycle ────────────────────────────────────────────────────

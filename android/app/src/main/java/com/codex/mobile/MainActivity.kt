@@ -15,6 +15,7 @@ import android.webkit.WebViewClient
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import java.net.HttpURLConnection
@@ -323,16 +324,20 @@ class MainActivity : AppCompatActivity() {
         }
         updateStatus("Authenticated")
 
-        // Step 6: Health check (non-blocking — user chooses)
-        updateStatus("Verifying API access…", "Sending test message")
+        // Step 6: Health check (informational only — never blocks)
+        updateStatus("Verifying API access…", "Optional connectivity check")
         val healthOk = serverManager.healthCheck { msg -> updateDetail(msg) }
         if (!healthOk) {
-            val continueAnyway = askContinueOnHealthFail()
-            if (!continueAnyway) {
-                throw RuntimeException("API health check failed — Codex could not reach OpenAI")
+            Log.w(TAG, "Health check failed — continuing anyway (login already confirmed)")
+            runOnUiThread {
+                Toast.makeText(
+                    this,
+                    "Connectivity check failed — continuing anyway.",
+                    Toast.LENGTH_LONG,
+                ).show()
             }
         }
-        updateStatus("API verified")
+        updateStatus("Ready")
 
         // Step 7: Configure and start OpenClaw
         if (serverManager.isOpenClawInstalled()) {
@@ -515,34 +520,6 @@ class MainActivity : AppCompatActivity() {
             Log.w(TAG, "probeUrl failed for $url: ${e.message}")
             false
         }
-    }
-
-    /**
-     * Ask the user whether to continue even if the API health check failed.
-     */
-    private fun askContinueOnHealthFail(): Boolean {
-        var result = false
-        val lock = Object()
-
-        runOnUiThread {
-            AlertDialog.Builder(this)
-                .setTitle("Connectivity check")
-                .setMessage("Could not verify connectivity to OpenAI.\n\nContinue anyway?")
-                .setCancelable(false)
-                .setPositiveButton("Continue") { _, _ ->
-                    result = true
-                    synchronized(lock) { lock.notifyAll() }
-                }
-                .setNegativeButton("Retry") { _, _ ->
-                    synchronized(lock) { lock.notifyAll() }
-                }
-                .show()
-        }
-
-        synchronized(lock) {
-            lock.wait(300_000)
-        }
-        return result
     }
 
     /**
