@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="engine_ready">#34d399</color>
+    <color name="engine_warn">#fbbf24</color>
+    <color name="engine_idle">#94a3b8</color>
+</resources>

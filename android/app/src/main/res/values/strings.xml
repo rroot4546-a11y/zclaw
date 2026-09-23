@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">zclaw</string>
+    <string name="status_initializing">Initializing…</string>
+    <string name="status_extracting_bootstrap">Extracting environment…</string>
+    <string name="status_installing_packages">Installing packages…</string>
+    <string name="status_installing_codex">Installing Codex…</string>
+    <string name="status_starting_server">Starting server…</string>
+    <string name="status_waiting_server">Waiting for server…</string>
+    <string name="api_key_title">OpenAI API Key</string>
+    <string name="api_key_message">Enter your OpenAI API key to use the assistant.</string>
+    <string name="api_key_hint">sk-…</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="error_title">Error</string>
+    <string name="error_bootstrap">Failed to set up the environment. Please try again.</string>
+    <string name="error_server">Failed to start the server.</string>
+    <string name="retry">Retry</string>
+    <string name="engine_picker_title">Choose your AI engine</string>
+    <string name="engine_picker_subtitle">Pick one to start chatting</string>
+    <string name="engine_picker_footer">zclaw 1.4.0 · engines run on-device, offline-ready</string>
+    <string name="engine_codex">Codex</string>
+    <string name="engine_codex_desc">OpenAI coding agent — ready and working</string>
+    <string name="engine_opencode">OpenCode</string>
+    <string name="engine_opencode_desc">Agentic coding terminal — setup required</string>
+    <string name="engine_openclaw">OpenClaw</string>
+    <string name="engine_openclaw_desc">Personal AI home assistant — account needed</string>
+    <string name="engine_status_ready">Ready</string>
+    <string name="engine_status_soon">Coming soon</string>
+    <string name="engine_btn_start">Start</string>
+    <string name="engine_btn_open">Open</string>
+    <string name="engine_status_stopped">Stopped</string>
+    <string name="engine_status_running">Running</string>
+    <string name="engine_opencode_setup_title">OpenCode engine</string>
+    <string name="engine_opencode_setup_msg">OpenCode needs an OpenAI API key to run. It will be stored locally on this device.</string>
+    <string name="engine_opencode_fail_title">OpenCode engine</string>
+    <string name="engine_opencode_fail_msg">Could not start OpenCode. Please try again.</string>
+    <string name="engine_openclaw_dialog_title">OpenClaw engine</string>
+    <string name="engine_openclaw_dialog_msg">OpenClaw needs an openclaw.ai API key and a connected platform (e.g. your own Telegram bot). Its control dashboard is not ready yet.</string>
+</resources>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">zclaw</string>
+    <string name="status_initializing">جارٍ التحضير…</string>
+    <string name="status_extracting_bootstrap">فك ضغط البيئة…</string>
+    <string name="status_installing_packages">تثبيت الحزم…</string>
+    <string name="status_installing_codex">تثبيت Codex…</string>
+    <string name="status_starting_server">تشغيل الخادم…</string>
+    <string name="status_waiting_server">انتظار الخادم…</string>
+    <string name="api_key_title">مفتاح OpenAI API</string>
+    <string name="api_key_message">أدخل مفتاح OpenAI API لاستخدام التحكم الذكي.</string>
+    <string name="api_key_hint">sk-…</string>
+    <string name="ok">متابعة</string>
+    <string name="cancel">إلغاء</string>
+    <string name="error_title">حدث خطأ</string>
+    <string name="error_bootstrap">تعذّر تجهيز البيئة. حاول مجدداً.</string>
+    <string name="error_server">تعذّر تشغيل الخادم.</string>
+    <string name="retry">إعادة المحاولة</string>
+    <string name="engine_picker_title">اختر محرك الذكاء</string>
+    <string name="engine_picker_subtitle">اختر واحداً لبدء المحادثة</string>
+    <string name="engine_picker_footer">zclaw 1.4.0 · المحركات تعمل على الجهاز وجاهزة دون اتصال</string>
+    <string name="engine_codex">كودكس</string>
+    <string name="engine_codex_desc">وكيل برمجة من OpenAI — جاهز ويعمل</string>
+    <string name="engine_opencode">أوبن كود</string>
+    <string name="engine_opencode_desc">طرفية برمجة ذكية — يتطلب إعداداً</string>
+    <string name="engine_openclaw">أوبن كلاو</string>
+    <string name="engine_openclaw_desc">مساعد شخصي ذكي — يتطلب حساباً</string>
+    <string name="engine_status_ready">جاهز</string>
+    <string name="engine_status_soon">قريباً</string>
+    <string name="engine_btn_start">تشغيل</string>
+    <string name="engine_btn_open">فتح</string>
+    <string name="engine_status_stopped">متوقف</string>
+    <string name="engine_status_running">يعمل</string>
+    <string name="engine_opencode_setup_title">محرك أوبن كود</string>
+    <string name="engine_opencode_setup_msg">يتطلب أوبن كود مفتاح OpenAI API للتشغيل. سيُحفظ محلياً على هذا الجهاز.</string>
+    <string name="engine_opencode_fail_title">محرك أوبن كود</string>
+    <string name="engine_opencode_fail_msg">تعذّر تشغيل أوبن كود. حاول مجدداً.</string>
+    <string name="engine_openclaw_dialog_title">محرك أوبن كلاو</string>
+    <string name="engine_openclaw_dialog_msg">يتطلب أوبن كلاو مفتاح openclaw.ai ومنصة متصلة (مثل بوت تيليجرام خاص بك). لوحة التحكم ليست جاهزة بعد.</string>
+</resources>

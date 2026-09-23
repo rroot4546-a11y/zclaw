@@ -1,0 +1,572 @@
+@import "tailwindcss";
+
+/* ── zclaw polish: Arabic typography, RTL input, brand mark ── */
+
+html {
+  font-family: 'Noto Naskh Arabic', 'Cairo', 'Google Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: #0b1220;
+}
+
+.thread-composer-input {
+  direction: rtl;
+  text-align: right;
+  font-family: inherit;
+}
+
+.zclaw-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 10px;
+}
+
+.zclaw-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.zclaw-brand-name {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: #0f172a;
+}
+
+.request-button-primary {
+  background-color: #0d9488 !important;
+  border-color: #0d9488 !important;
+}
+
+.request-button-primary:hover {
+  background-color: #0f766e !important;
+}
+
+/* ══ zclaw: dark theme (default) ═══════════════════════════════════ */
+
+html[data-theme='dark'] body {
+  background-color: #0b1220;
+  color: #dbe2ea;
+}
+
+html[data-theme='dark'] .desktop-layout {
+  background-color: #0b1220;
+  color: #dbe2ea;
+}
+
+html[data-theme='dark'] .desktop-sidebar {
+  background-color: #0f172a;
+}
+
+html[data-theme='dark'] .desktop-main {
+  background-color: #0b1220;
+}
+
+html[data-theme='dark'] .desktop-resize-handle {
+  background-color: #1e293b;
+}
+
+html[data-theme='dark'] .content-header {
+  background-color: #0f172a;
+}
+
+html[data-theme='dark'] .content-title {
+  color: #e2e8f0;
+}
+
+html[data-theme='dark'] .thread-composer-shell {
+  background-color: #0f172a;
+  border-color: #273449;
+}
+
+html[data-theme='dark'] .thread-composer-input {
+  color: #e2e8f0;
+}
+
+html[data-theme='dark'] .thread-composer-input:disabled {
+  background-color: #131c2b;
+  color: #64748b;
+}
+
+html[data-theme='dark'] .thread-composer-submit,
+html[data-theme='dark'] .thread-composer-stop {
+  background-color: #14b8a6;
+  color: #ffffff;
+}
+
+html[data-theme='dark'] .thread-composer-submit:hover,
+html[data-theme='dark'] .thread-composer-stop:hover {
+  background-color: #0d9488;
+}
+
+html[data-theme='dark'] .thread-composer-submit:disabled {
+  background-color: #273449;
+}
+
+html[data-theme='dark'] .sidebar-thread-controls-button {
+  color: #94a3b8;
+}
+
+html[data-theme='dark'] .sidebar-thread-controls-button:hover {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+html[data-theme='dark'] .sidebar-search-bar {
+  background-color: #0b1220;
+  border-color: #243248;
+}
+
+html[data-theme='dark'] .sidebar-search-input {
+  color: #e2e8f0;
+}
+
+html[data-theme='dark'] .sidebar-search-input::placeholder {
+  color: #64748b;
+}
+
+html[data-theme='dark'] .conversation-empty,
+html[data-theme='dark'] .conversation-loading {
+  color: #64748b;
+}
+
+html[data-theme='dark'] .message-text {
+  color: #dbe2ea;
+}
+
+html[data-theme='dark'] .worked-separator-text {
+  color: #dbe2ea;
+}
+
+html[data-theme='dark'] .message-card[data-role='user'] {
+  background-color: #1e293b;
+  color: #e2e8f0;
+}
+
+html[data-theme='dark'] .message-inline-code {
+  border-color: #2a3a50;
+  background-color: #111c2d;
+  color: #cbd5e1;
+}
+
+html[data-theme='dark'] .request-card {
+  background-color: #2a2415;
+  border-color: #7a5f1e;
+}
+
+html[data-theme='dark'] .request-title {
+  color: #f2d28a;
+}
+
+html[data-theme='dark'] .request-meta,
+html[data-theme='dark'] .request-reason,
+html[data-theme='dark'] .request-question-title {
+  color: #e3c07a;
+}
+
+html[data-theme='dark'] .request-question-text {
+  color: #dbe2ea;
+}
+
+html[data-theme='dark'] .request-select,
+html[data-theme='dark'] .request-input {
+  background-color: #0f172a;
+  border-color: #2a3a50;
+  color: #e2e8f0;
+}
+
+html[data-theme='dark'] .request-button {
+  color: #cbd5e1;
+}
+
+html[data-theme='dark'] .thread-tree-header {
+  color: #7d8ea6;
+}
+
+html[data-theme='dark'] .thread-row {
+  color: #dbe2ea;
+}
+
+html[data-theme='dark'] .thread-row:hover {
+  background-color: #1e293b;
+}
+
+html[data-theme='dark'] .thread-row-title {
+  color: #e2e8f0;
+}
+
+html[data-theme='dark'] .thread-row-time {
+  color: #64748b;
+}
+
+html[data-theme='dark'] .project-title {
+  color: #e2e8f0;
+}
+
+html[data-theme='dark'] .project-empty,
+html[data-theme='dark'] .thread-tree-loading,
+html[data-theme='dark'] .thread-tree-no-results {
+  color: #64748b;
+}
+
+html[data-theme='dark'] .project-menu-panel,
+html[data-theme='dark'] .composer-dropdown-menu {
+  background-color: #0f172a;
+  border-color: #273449;
+}
+
+html[data-theme='dark'] .project-menu-item,
+html[data-theme='dark'] .composer-dropdown-option {
+  color: #dbe2ea;
+}
+
+html[data-theme='dark'] .project-menu-item:hover,
+html[data-theme='dark'] .composer-dropdown-option:hover {
+  background-color: #1e293b;
+}
+
+html[data-theme='dark'] .project-menu-input,
+html[data-theme='dark'] .composer-dropdown-trigger .composer-dropdown-value {
+  color: #e2e8f0;
+}
+
+html[data-theme='dark'] .project-menu-label {
+  color: #7d8ea6;
+}
+
+html[data-theme='dark'] .thread-show-more-button {
+  color: #94a3b8;
+}
+
+html[data-theme='dark'] .selected\:bg-zinc-100::-webkit-scrollbar,
+html[data-theme='dark'] .conversation-list::-webkit-scrollbar,
+html[data-theme='dark'] .desktop-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+html[data-theme='dark'] .conversation-list::-webkit-scrollbar-thumb,
+html[data-theme='dark'] .desktop-sidebar::-webkit-scrollbar-thumb {
+  background-color: #273449;
+  border-radius: 8px;
+}
+
+html[data-theme='dark'] .image-modal-close {
+  background-color: rgba(15, 23, 42, 0.9);
+  border-color: #273449;
+  color: #e2e8f0;
+}
+
+/* brand wordmark on dark */
+html[data-theme='dark'] .zclaw-brand-name {
+  color: #e6edf3;
+}
+
+/* ══ zclaw: mobile / Android friendly ══════════════════════════════ */
+
+@media (max-width: 767px) {
+  .desktop-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .desktop-sidebar {
+    position: fixed !important;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: min(86vw, 340px) !important;
+    z-index: 70;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .desktop-resize-handle {
+    display: none !important;
+  }
+
+  .sidebar-thread-controls-button {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .sidebar-thread-controls-button .sidebar-thread-controls-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .thread-row {
+    min-height: 46px;
+  }
+
+  .thread-row-item {
+    padding: 10px 8px;
+  }
+
+  .content-header {
+    padding: 8px 10px !important;
+    min-height: 48px;
+  }
+
+  .content-title {
+    font-size: 13px !important;
+  }
+
+  .thread-composer {
+    padding-inline: 10px !important;
+  }
+
+  .thread-composer-shell {
+    padding: 8px !important;
+  }
+
+  .thread-composer-input {
+    font-size: 16px !important;
+  }
+
+  .message-body {
+    padding-inline: 12px;
+  }
+
+  .conversation-item {
+    padding-inline: 4px;
+  }
+
+  .settings-panel {
+    width: 17rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .thread-composer-controls {
+    gap: 8px !important;
+  }
+
+  .composer-dropdown-trigger {
+    max-width: 92px;
+  }
+}
+
+/* ══ zclaw: light theme (from Settings) ═════════════════════════════ */
+
+html[data-theme='light'] body {
+  background-color: #f6f7f9;
+  color: #1f2328;
+}
+
+html[data-theme='light'] .desktop-layout {
+  background-color: #f6f7f9;
+  color: #1f2328;
+}
+
+html[data-theme='light'] .desktop-sidebar {
+  background-color: #ffffff;
+}
+
+html[data-theme='light'] .desktop-main {
+  background-color: #f6f7f9;
+}
+
+html[data-theme='light'] .content-header {
+  background-color: #ffffff;
+}
+
+html[data-theme='light'] .thread-composer-shell {
+  background-color: #ffffff;
+}
+
+html[data-theme='light'] .zclaw-brand-name {
+  color: #0f172a;
+}
+
+/* ══ zclaw: professional chat polish ═════════════════════════════════ */
+
+.conversation-list {
+  padding: 20px 14px 28px !important;
+}
+
+.conversation-item {
+  margin-bottom: 18px !important;
+}
+
+.conversation-item:last-child {
+  margin-bottom: 0 !important;
+}
+
+.message-text {
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+}
+
+.message-card[data-role='user'] {
+  border-radius: 18px !important;
+  padding: 12px 14px !important;
+  margin: 2px 0 !important;
+  max-width: min(72%, 520px) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+}
+
+html[data-theme='dark'] .message-card[data-role='user'] {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4) !important;
+}
+
+.message-body {
+  padding: 0 6px;
+}
+
+.worked-separator-text {
+  font-size: 13px !important;
+  color: #8a94a6 !important;
+  letter-spacing: 0.02em !important;
+}
+
+.request-card {
+  padding: 14px 16px !important;
+  border-radius: 16px !important;
+}
+
+.request-title {
+  font-size: 14px !important;
+}
+
+.request-meta {
+  font-size: 12.5px !important;
+}
+
+.request-question-text {
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+.request-button {
+  border-radius: 10px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+}
+
+.thread-composer {
+  padding-bottom: 10px !important;
+}
+
+.thread-composer-shell {
+  padding: 8px 12px !important;
+  border-radius: 22px !important;
+}
+
+.thread-composer-input {
+  font-size: 16px !important;
+  height: 44px !important;
+}
+
+.thread-composer-submit,
+.thread-composer-stop {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 50% !important;
+}
+
+.thread-composer-submit-icon,
+.thread-composer-stop-icon {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.content-header {
+  min-height: 56px !important;
+  padding: 0 16px !important;
+}
+
+.content-title {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.thread-row-item {
+  padding: 12px 10px !important;
+}
+
+.thread-row {
+  min-height: 48px !important;
+}
+
+.thread-row-title {
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+}
+
+.thread-row-time {
+  font-size: 11px !important;
+}
+
+.thread-tree-header,
+.project-header-row {
+  padding: 6px 12px !important;
+}
+
+.project-title {
+  font-size: 14px !important;
+}
+
+.sidebar-thread-controls-button {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.sidebar-thread-controls-icon {
+  width: 17px !important;
+  height: 17px !important;
+}
+
+.composer-dropdown-trigger {
+  border-radius: 10px !important;
+}
+
+.composer-dropdown-option {
+  font-size: 13px !important;
+}
+
+@media (max-width: 767px) {
+  .conversation-list {
+    padding: 12px 10px 20px !important;
+  }
+
+  .conversation-item {
+    margin-bottom: 14px !important;
+  }
+
+  .message-card[data-role='user'] {
+    max-width: min(80%, 480px) !important;
+  }
+
+  .content-header {
+    min-height: 52px !important;
+    padding: 0 12px !important;
+  }
+
+  .thread-composer {
+    padding: 0 8px 6px !important;
+  }
+
+  .thread-composer-shell {
+    padding: 6px 10px !important;
+  }
+
+  .thread-composer-input {
+    font-size: 16px !important;
+  }
+
+  .thread-composer-submit,
+  .thread-composer-stop {
+    width: 40px !important;
+    height: 40px !important;
+  }
+}
