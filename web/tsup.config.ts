@@ -10,5 +10,7 @@ export default defineConfig({
   banner: {
     js: '#!/usr/bin/env node',
   },
-  external: ['express', 'commander'],
+  // Bundle every dependency (express, commander) into the CLI so it runs
+  // standalone from the APK assets without requiring a node_modules tree.
+  noExternal: ['express', 'commander'],
 })
