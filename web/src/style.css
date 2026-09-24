@@ -893,3 +893,313 @@ html[data-theme='dark'] .thread-tree-no-results {
     gap: 8px;
   }
 }
+
+/* ══ zclaw 2.2 — professional motion & icon polish, tighter phone fit ══ */
+
+/* route content transition */
+.content-fade-enter-active,
+.content-fade-leave-active {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+.content-fade-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.content-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+/* sidebar drawer slides in */
+@keyframes zclaw-drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(-14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+html[dir='rtl'] .desktop-sidebar {
+  animation-name: zclaw-drawer-in-rtl;
+}
+
+@keyframes zclaw-drawer-in-rtl {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.desktop-sidebar {
+  animation: zclaw-drawer-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* messages fade up on arrival */
+@keyframes zclaw-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.995);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.conversation-item {
+  animation: zclaw-message-in 0.2s ease-out both;
+}
+
+.conversation-item-overlay {
+  animation-duration: 0.28s;
+}
+
+/* dropdown menus scale+fade open */
+.composer-dropdown-menu {
+  transform-origin: top left;
+  animation: zclaw-menu-in 0.14s ease-out both;
+}
+
+.composer-dropdown-menu-wrap-up .composer-dropdown-menu {
+  transform-origin: bottom left;
+}
+
+@keyframes zclaw-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* icon buttons: consistent, tactile, professional */
+.sidebar-thread-controls-button,
+.settings-trigger,
+.engine-bar-home {
+  position: relative;
+  transition:
+    transform 0.12s ease,
+    background-color 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.sidebar-thread-controls-button:hover,
+.settings-trigger:hover,
+.engine-bar-home:hover {
+  transform: translateY(-1px);
+}
+
+.sidebar-thread-controls-button:active,
+.settings-trigger:active,
+.engine-bar-home:active {
+  transform: translateY(0) scale(0.95);
+}
+
+.sidebar-thread-controls-button:focus-visible,
+.settings-trigger:focus-visible,
+.engine-bar-home:focus-visible,
+.composer-dropdown-trigger:focus-visible {
+  outline: 2px solid #14b8a6;
+  outline-offset: 2px;
+}
+
+.sidebar-thread-controls-button {
+  border-radius: 10px !important;
+}
+
+.sidebar-thread-controls-icon,
+.settings-trigger-icon {
+  transition: transform 0.16s ease;
+}
+
+.sidebar-thread-controls-button:hover .sidebar-thread-controls-icon,
+.settings-trigger:hover .settings-trigger-icon {
+  transform: scale(1.12);
+}
+
+.settings-trigger {
+  border-radius: 10px;
+}
+
+/* soft theme cross-fade on chrome surfaces */
+.desktop-layout,
+.desktop-sidebar,
+.desktop-main,
+.content-header,
+.thread-composer-shell,
+.message-card,
+.request-card,
+.composer-dropdown-trigger,
+.composer-dropdown-menu,
+.settings-panel,
+.project-menu-panel {
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* composer pill micro-interaction */
+.thread-composer-submit,
+.thread-composer-stop {
+  transition:
+    transform 0.12s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.thread-composer-submit:hover:not(:disabled),
+.thread-composer-stop:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(13, 148, 136, 0.28);
+}
+
+.thread-composer-submit:active:not(:disabled),
+.thread-composer-stop:active:not(:disabled) {
+  transform: translateY(0) scale(0.96);
+}
+
+.thread-composer-shell:focus-within {
+  box-shadow: 0 0 0 2px rgba(20, 184, 166, 0.35);
+}
+
+/* tighter phone measurements */
+@media (max-width: 767px) {
+  .content-body {
+    gap: 6px !important;
+    padding-bottom: 2px !important;
+  }
+
+  .content-header {
+    min-height: 48px !important;
+    padding-inline: 8px !important;
+  }
+
+  .content-title {
+    font-size: 12.5px !important;
+  }
+
+  .conversation-list {
+    gap: 10px !important;
+    padding: 10px 8px 14px !important;
+  }
+
+  .message-card[data-role='user'] {
+    max-width: 78% !important;
+    padding: 10px 12px !important;
+  }
+
+  .message-card[data-role='assistant'],
+  .message-card[data-role='system'] {
+    padding: 10px 12px !important;
+  }
+
+  .thread-composer {
+    padding: 0 8px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  .thread-composer-shell {
+    padding: 5px 9px !important;
+    border-radius: 20px !important;
+  }
+
+  .thread-composer-input {
+    height: 42px !important;
+    font-size: 15px !important;
+  }
+
+  .thread-composer-controls {
+    gap: 6px !important;
+    margin-top: 4px !important;
+  }
+
+  .thread-composer-submit,
+  .thread-composer-stop {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .composer-dropdown-trigger {
+    height: 32px !important;
+    padding: 0 10px !important;
+    font-size: 12.5px !important;
+  }
+
+  .engine-bar .composer-dropdown-trigger {
+    height: 34px !important;
+    padding-inline: 10px !important;
+  }
+
+  .engine-bar-home {
+    height: 34px !important;
+    padding-inline: 9px !important;
+  }
+
+  .sidebar-thread-controls-button {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .new-thread-empty {
+    padding-inline: 10px;
+  }
+
+  .request-card {
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+  }
+
+  .request-actions {
+    gap: 6px !important;
+  }
+
+  .request-button {
+    padding: 7px 12px !important;
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .engine-bar .composer-dropdown-value {
+    max-width: 84px !important;
+  }
+
+  .engine-bar .composer-dropdown-prefix {
+    display: none !important;
+  }
+
+  .thread-composer-controls .composer-dropdown-prefix {
+    display: none !important;
+  }
+}
+
+/* respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  .conversation-item,
+  .desktop-sidebar,
+  .composer-dropdown-menu,
+  .content-fade-enter-active,
+  .content-fade-leave-active {
+    animation: none !important;
+    transition: none !important;
+  }
+}

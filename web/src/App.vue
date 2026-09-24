@@ -88,41 +88,43 @@
         </ContentHeader>
 
         <section class="content-body">
-          <template v-if="isHomeRoute">
-            <div class="content-grid">
-              <div class="new-thread-empty">
-                <p class="new-thread-hero">{{ t('hero') }}</p>
-                <ComposerDropdown class="new-thread-folder-dropdown" :model-value="newThreadCwd"
-                  :options="newThreadFolderOptions" placeholder="Choose folder"
-                  :disabled="newThreadFolderOptions.length === 0" @update:model-value="onSelectNewThreadFolder" />
-              </div>
+          <Transition name="content-fade" mode="out-in">
+            <div v-if="isHomeRoute" key="home" class="content-inner">
+              <div class="content-grid">
+                <div class="new-thread-empty">
+                  <p class="new-thread-hero">{{ t('hero') }}</p>
+                  <ComposerDropdown class="new-thread-folder-dropdown" :model-value="newThreadCwd"
+                    :options="newThreadFolderOptions" placeholder="Choose folder"
+                    :disabled="newThreadFolderOptions.length === 0" @update:model-value="onSelectNewThreadFolder" />
+                </div>
 
-              <ThreadComposer :active-thread-id="composerThreadContextId" :disabled="isSendingMessage"
-                :models="availableModelIds" :selected-model="selectedModelId"
-                :selected-reasoning-effort="selectedReasoningEffort" :is-turn-in-progress="false"
-                :is-interrupting-turn="false" @submit="onSubmitThreadMessage"
-                @update:selected-model="onSelectModel" @update:selected-reasoning-effort="onSelectReasoningEffort" />
-            </div>
-          </template>
-          <template v-else>
-            <div class="content-grid">
-              <div class="content-thread">
-                <ThreadConversation :messages="filteredMessages" :is-loading="isLoadingMessages"
-                  :active-thread-id="composerThreadContextId" :scroll-state="selectedThreadScrollState"
-                  :live-overlay="liveOverlay"
-                  :pending-requests="selectedThreadServerRequests"
-                  @update-scroll-state="onUpdateThreadScrollState"
-                  @respond-server-request="onRespondServerRequest" />
+                <ThreadComposer :active-thread-id="composerThreadContextId" :disabled="isSendingMessage"
+                  :models="availableModelIds" :selected-model="selectedModelId"
+                  :selected-reasoning-effort="selectedReasoningEffort" :is-turn-in-progress="false"
+                  :is-interrupting-turn="false" @submit="onSubmitThreadMessage"
+                  @update:selected-model="onSelectModel" @update:selected-reasoning-effort="onSelectReasoningEffort" />
               </div>
-
-              <ThreadComposer :active-thread-id="composerThreadContextId"
-                :disabled="isSendingMessage || isLoadingMessages" :models="availableModelIds"
-                :selected-model="selectedModelId" :selected-reasoning-effort="selectedReasoningEffort"
-                :is-turn-in-progress="isSelectedThreadInProgress" :is-interrupting-turn="isInterruptingTurn"
-                @submit="onSubmitThreadMessage" @update:selected-model="onSelectModel"
-                @update:selected-reasoning-effort="onSelectReasoningEffort" @interrupt="onInterruptTurn" />
             </div>
-          </template>
+            <div v-else key="thread" class="content-inner">
+              <div class="content-grid">
+                <div class="content-thread">
+                  <ThreadConversation :messages="filteredMessages" :is-loading="isLoadingMessages"
+                    :active-thread-id="composerThreadContextId" :scroll-state="selectedThreadScrollState"
+                    :live-overlay="liveOverlay"
+                    :pending-requests="selectedThreadServerRequests"
+                    @update-scroll-state="onUpdateThreadScrollState"
+                    @respond-server-request="onRespondServerRequest" />
+                </div>
+
+                <ThreadComposer :active-thread-id="composerThreadContextId"
+                  :disabled="isSendingMessage || isLoadingMessages" :models="availableModelIds"
+                  :selected-model="selectedModelId" :selected-reasoning-effort="selectedReasoningEffort"
+                  :is-turn-in-progress="isSelectedThreadInProgress" :is-interrupting-turn="isInterruptingTurn"
+                  @submit="onSubmitThreadMessage" @update:selected-model="onSelectModel"
+                  @update:selected-reasoning-effort="onSelectReasoningEffort" @interrupt="onInterruptTurn" />
+              </div>
+            </div>
+          </Transition>
         </section>
       </section>
     </template>
@@ -546,6 +548,10 @@ async function submitFirstMessageForNewThread(text: string): Promise<void> {
 
 .content-body {
   @apply flex-1 min-h-0 w-full flex flex-col gap-3 pt-1 pb-4 overflow-y-hidden overflow-x-visible;
+}
+
+.content-inner {
+  @apply flex-1 min-h-0 flex flex-col;
 }
 
 .content-error {
