@@ -242,8 +242,14 @@ private const val PREFS = "zclaw.settings"
         cmd.add("127.0.0.1")
 
         val pb = ProcessBuilder(cmd)
+        // The app's proot is a Termux binary dynamically linked against
+        // libtalloc.so.2 in prefix/lib. Without LD_LIBRARY_PATH (+ the
+        // termux-exec path remap) Android's linker fails to load it, which
+        // produced "CANNOT LINK EXECUTABLE ... libtalloc.so.2 not found".
+        val env = CodexServerManager(context).buildEnvironment().toMutableMap()
+        env["HOME"] = DEFAULT_HOME
         pb.environment().clear()
-        pb.environment()["HOME"] = DEFAULT_HOME
+        pb.environment().putAll(env)
         pb.redirectErrorStream(true)
         @Suppress("DiscouragedApi")
         pb.directory(engineRoot(""))

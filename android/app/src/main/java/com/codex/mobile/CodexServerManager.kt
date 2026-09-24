@@ -1589,6 +1589,8 @@ WEOF
         Log.i(TAG, "Wrote full-access config to $configFile")
     }
 
+    fun buildEnvironment(): Map<String, String> = buildEnvironment(BootstrapInstaller.getPaths(context))
+
     private fun buildEnvironment(
         paths: BootstrapInstaller.Paths,
     ): Map<String, String> {
